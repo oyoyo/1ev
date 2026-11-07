@@ -1,0 +1,39 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getAllPosts } from '../../lib/posts';
+const all = await getAllPosts();
+const q0 = Astro.url.searchParams.get('q') || '';
+const index = all.map(p=>({
+  title: p.title,
+  date: p.date,
+  channel: p.channel,
+  url: p.url,
+  body: (p.body||'').replace(/\s+/g,' ').slice(0,1200),
+}));
+---
+<Base title="搜索 | 1ev">
+  <div class="hero"><h1>搜索</h1><p>在全部 {all.length} 篇简报中查找关键词（标题 + 正文）。</p></div>
+  <form id="sform" style="display:flex; gap:8px; margin-bottom:24px" role="search">
+    <input id="sq" type="search" placeholder="输入关键词，如：比亚迪、CPI…" style="flex:1; font-size:16px; padding:10px 14px; border:1px solid var(--border); border-radius:4px" />
+    <button class="btn" type="submit">搜索</button>
+  </form>
+  <div id="results" class="rows"><p class="meta">输入关键词后回车，或在顶部搜索框直接搜索。</p></div>
+  <script define:vars={{ index, q: q0 }}>
+    const resultsEl = document.getElementById('results');
+    const input = document.getElementById('sq');
+    const form = document.getElementById('sform');
+    function escapeHtml(s){ return s.replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function render(q){
+      q = (q||'').trim().toLowerCase();
+      if(!q){ resultsEl.innerHTML = '<p class="meta">输入关键词后回车。</p>'; return; }
+      const hits = index.filter(p => p.title.toLowerCase().includes(q) || p.body.toLowerCase().includes(q));
+      if(!hits.length){ resultsEl.innerHTML = '<p class="meta">没有找到 “'+escapeHtml(q)+'” 相关的简报。</p>'; return; }
+      resultsEl.innerHTML = hits.map(p=>{
+        const badge = p.channel === 'news' ? '<span class="badge badge-purple">新闻</span>' : '<span class="badge badge-green">出海</span>';
+        return '<div class="row"><span class="date tnum">'+p.date+'</span><span>'+badge+'</span><a href="'+p.url+'">'+escapeHtml(p.title)+'</a></div>';
+      }).join('');
+    }
+    form.addEventListener('submit', (e)=>{ e.preventDefault(); render(input.value); history.replaceState(null,'', '?q='+encodeURIComponent(input.value)); });
+    if(q){ input.value = q; render(q); }
+  </script>
+</Base>

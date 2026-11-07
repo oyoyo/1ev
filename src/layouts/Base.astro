@@ -84,6 +84,29 @@ const year = new Date().getFullYear();
     .footer-inner{max-width:1080px; margin:0 auto; padding:40px 24px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px}
     footer a{color:#fff}
     footer .small{font-size:13px; color:rgba(255,255,255,.55)}
+
+    /* Search */
+    .search{display:flex; align-items:center; gap:6px; margin-left:8px}
+    .search input{font-size:14px; padding:7px 10px; border:1px solid var(--border); border-radius:4px; width:150px; font-family:inherit; color:var(--navy)}
+    .search input:focus{border-color:var(--purple); outline:2px solid rgba(83,58,253,.18)}
+    .search button{font-size:14px; padding:7px 12px; border-radius:4px; border:1px solid var(--border-purple); background:transparent; color:var(--purple); cursor:pointer}
+    .search button:hover{background:rgba(83,58,253,.06)}
+    /* Two-column editorial layout */
+    .layout-2col{display:grid; gap:28px}
+    @media(min-width:900px){.layout-2col{grid-template-columns:minmax(0,1fr) 320px}}
+    .rail .card{margin-bottom:16px}
+    .rail h3{font-size:16px; font-weight:600; margin:0 0 10px; color:var(--navy)}
+    .rail ul{list-style:none; margin:0; padding:0}
+    .rail li{margin-bottom:8px; font-size:14px}
+    .rail li a{color:var(--label)}
+    .rail li a:hover{color:var(--purple)}
+    /* Compact list rows */
+    .rows{display:grid; gap:0}
+    .row{display:flex; gap:16px; align-items:baseline; padding:14px 4px; border-bottom:1px solid var(--border)}
+    .row .date{font-size:13px; color:var(--body); min-width:92px}
+    .row a{color:var(--navy); font-size:16px; font-weight:400}
+    .row a:hover{color:var(--purple); text-decoration:none}
+
     /* Mobile nav */
     .hamburger{display:none}
     @media(max-width:760px){
@@ -105,6 +128,10 @@ const year = new Date().getFullYear();
         <a href="/auto/">出海日报</a>
         <a href="/archive/">归档</a>
         <a href="/rss.xml">RSS</a>
+        <form class="search" action="/search/" method="get" role="search">
+          <input name="q" type="search" placeholder="搜索…" aria-label="搜索" />
+          <button type="submit">搜索</button>
+        </form>
         <a class="btn" href="/archive/">浏览全部</a>
       </nav>
       <button class="btn-ghost hamburger" id="menuBtn" type="button" aria-label="菜单">☰</button>
