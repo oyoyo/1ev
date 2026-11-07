@@ -1,5 +1,5 @@
 ---
-const { title = '1ev 每日简报', description = '每日新闻早报 + 汽车行业出海日报' } = Astro.props;
+const { title = '1ev 每日简报', description = '每日新闻早报 + 汽车行业日报' } = Astro.props;
 const url = new URL(Astro.url.pathname, Astro.site).href;
 const year = new Date().getFullYear();
 ---
@@ -142,7 +142,7 @@ const year = new Date().getFullYear();
     <div class="footer-inner">
       <div>
         <div style="font-size:18px; font-weight:600; color:#fff">1ev.fun</div>
-        <div class="small">每日新闻早报 + 汽车行业出海日报</div>
+        <div class="small">每日新闻早报 + 汽车行业日报</div>
       </div>
       <div class="small">每日 0:00 / 1:00 自动生成 · 2:00 发布<br /><a href="/rss.xml">订阅 RSS</a> · <a href="/archive/">归档</a></div>
       <div class="small">© <span class="tnum">{year}</span> 1ev.fun</div>
