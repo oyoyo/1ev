@@ -1,0 +1,36 @@
+---
+const { title = '1ev 每日简报', description = '每日新闻早报 + 汽车行业出海日报' } = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site).href;
+---
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <meta name="description" content={description} />
+  <link rel="alternate" type="application/rss+xml" title="1ev 每日简报" href="/rss.xml" />
+  <link rel="canonical" href={url} />
+  <title>{title}</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;max-width:780px;margin:0 auto;padding:24px 18px;line-height:1.75;color:#1a1a1a}
+    header{border-bottom:2px solid #111;padding-bottom:16px;margin-bottom:24px}
+    header a{color:#111;text-decoration:none}
+    nav a{margin-right:16px;color:#555}
+    .card{border:1px solid #e5e7eb;border-radius:12px;padding:20px;margin-bottom:20px}
+    .card h2{margin:0 0 8px;font-size:22px}
+    .meta{color:#888;font-size:13px;margin-bottom:12px}
+    ul{padding-left:20px} li{margin-bottom:10px}
+    footer{border-top:1px solid #e5e7eb;margin-top:40px;padding-top:16px;color:#888;font-size:13px}
+    .grid{display:grid;gap:18px}
+    @media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1><a href="/">1ev.fun</a></h1>
+    <nav><a href="/">首页</a><a href="/archive/">归档</a><a href="/rss.xml">RSS</a></nav>
+  </header>
+  <slot />
+  <footer>每日 0:00 更新 · 内容由自动化生成 · <a href="/rss.xml">订阅 RSS</a></footer>
+</body>
+</html>

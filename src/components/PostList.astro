@@ -1,0 +1,12 @@
+---
+const { posts = [] } = Astro.props;
+---
+<div class="grid">{posts.map((p:any)=>(
+  <article class="card">
+    <h2><a href={p.url}>{p.title}</a></h2>
+    <div class="meta">{p.date} · {p.channel === 'news' ? '新闻早报' : '出海日报'}</div>
+    {p.summary && <p>{p.summary}</p>}
+    {p.bodyHtml && <div set:html={p.bodyHtml} />}
+  </article>
+))}
+</div>

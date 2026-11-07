@@ -1,0 +1,15 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { marked } from 'marked';
+export async function getStaticPaths(){
+  const entries = await getCollection('news');
+  return entries.map((e:any)=>({ params:{ slug:e.id.replace(/\\.md$/,'') }, props:{ entry:e } }));
+}
+const { entry } = Astro.props;
+const html = marked.parse(entry.body || '');
+---
+<Base title={entry.data.title} description={entry.data.summary || entry.data.title}>
+  <p class="meta"><a href="/">← 返回首页</a> · {entry.data.date} · 新闻早报</p>
+  <article set:html={html} />
+</Base>

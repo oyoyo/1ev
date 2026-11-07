@@ -1,0 +1,12 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { getCollection } from 'astro:content';
+const news = (await getCollection('news')).map((e:any)=>({title:e.data.title,date:e.data.date,channel:'news',url:`/news/${e.id.replace(/\.md$/,'')}/`}));
+const auto = (await getCollection('auto')).map((e:any)=>({title:e.data.title,date:e.data.date,channel:'auto',url:`/auto/${e.id.replace(/\.md$/,'')}/`}));
+const all = [...news,...auto].sort((a:any,b:any)=> b.date.localeCompare(a.date));
+---
+<Base title="归档 | 1ev">
+  <h2>全部归档</h2>
+  <PostList posts={all} />
+</Base>
