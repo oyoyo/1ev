@@ -1,6 +1,7 @@
 ---
 const { title = '1ev 每日简报', description = '每日新闻早报 + 汽车行业出海日报' } = Astro.props;
 const url = new URL(Astro.url.pathname, Astro.site).href;
+const year = new Date().getFullYear();
 ---
 <!doctype html>
 <html lang="zh-CN">
@@ -10,27 +11,122 @@ const url = new URL(Astro.url.pathname, Astro.site).href;
   <meta name="description" content={description} />
   <link rel="alternate" type="application/rss+xml" title="1ev 每日简报" href="/rss.xml" />
   <link rel="canonical" href={url} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet" />
   <title>{title}</title>
   <style>
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;max-width:780px;margin:0 auto;padding:24px 18px;line-height:1.75;color:#1a1a1a}
-    header{border-bottom:2px solid #111;padding-bottom:16px;margin-bottom:24px}
-    header a{color:#111;text-decoration:none}
-    nav a{margin-right:16px;color:#555}
-    .card{border:1px solid #e5e7eb;border-radius:12px;padding:20px;margin-bottom:20px}
-    .card h2{margin:0 0 8px;font-size:22px}
-    .meta{color:#888;font-size:13px;margin-bottom:12px}
-    ul{padding-left:20px} li{margin-bottom:10px}
-    footer{border-top:1px solid #e5e7eb;margin-top:40px;padding-top:16px;color:#888;font-size:13px}
-    .grid{display:grid;gap:18px}
+    :root{
+      --purple:#533afd; --purple-hover:#4434d4;
+      --navy:#061b31; --label:#273951; --body:#64748d;
+      --border:#e5edf5; --border-purple:#b9b9f9;
+      --shadow-blue:rgba(50,50,93,0.25); --shadow-black:rgba(0,0,0,0.1);
+      --dark:#1c1e54;
+    }
+    *{box-sizing:border-box}
+    html{-webkit-text-size-adjust:100%}
+    body{
+      font-family:'Source Sans 3', system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      font-feature-settings:"ss01";
+      background:#fff; color:var(--navy); margin:0; line-height:1.6;
+    }
+    a{color:var(--purple); text-decoration:none}
+    a:hover{color:var(--purple-hover); text-decoration:underline}
+    .tnum{font-feature-settings:"tnum"}
+    /* Nav */
+    .site-header{position:sticky; top:0; z-index:50; background:rgba(255,255,255,.9); backdrop-filter:blur(12px); border-bottom:1px solid var(--border)}
+    .nav-inner{max-width:1080px; margin:0 auto; padding:0 24px; height:60px; display:flex; align-items:center; justify-content:space-between; gap:16px}
+    .brand{font-size:22px; font-weight:600; letter-spacing:-0.5px; color:var(--navy); text-decoration:none}
+    .brand em{font-style:normal; color:var(--purple)}
+    .nav-links{display:flex; align-items:center; gap:4px; flex-wrap:wrap}
+    .nav-links a, .dropdown>button{font-size:14px; font-weight:400; color:var(--label); padding:8px 12px; border-radius:6px; background:none; border:0; cursor:pointer; font-family:inherit}
+    .nav-links a:hover, .dropdown>button:hover{background:rgba(83,58,253,.06); text-decoration:none; color:var(--navy)}
+    .dropdown{position:relative}
+    .dropdown-menu{display:none; position:absolute; top:calc(100% + 6px); left:0; min-width:220px; background:#fff; border:1px solid var(--border); border-radius:6px;
+      box-shadow:var(--shadow-blue) 0 30px 45px -30px, var(--shadow-black) 0 18px 36px -18px; padding:8px; z-index:60}
+    .dropdown.open .dropdown-menu{display:block}
+    .dropdown-menu a{display:block; padding:8px 10px; border-radius:4px; font-size:14px}
+    .dropdown-menu a:hover{background:rgba(83,58,253,.06)}
+    .dropdown-menu .group-label{font-size:11px; color:var(--body); padding:8px 10px 4px; text-transform:uppercase; letter-spacing:.04em}
+    .btn{display:inline-flex; align-items:center; gap:6px; background:var(--purple); color:#fff; padding:8px 16px; border-radius:4px; font-size:14px; font-weight:400; border:0; cursor:pointer}
+    .btn:hover{background:var(--purple-hover); color:#fff; text-decoration:none}
+    .btn-ghost{background:transparent; color:var(--purple); border:1px solid var(--border-purple); padding:8px 16px; border-radius:4px; font-size:14px}
+    .btn-ghost:hover{background:rgba(83,58,253,.05); text-decoration:none}
+    /* Layout */
+    .wrap{max-width:1080px; margin:0 auto; padding:48px 24px 64px}
+    .hero{max-width:720px; margin-bottom:40px}
+    .hero h1{font-size:48px; font-weight:300; line-height:1.15; letter-spacing:-0.96px; margin:0 0 16px; color:var(--navy)}
+    .hero p{font-size:18px; font-weight:300; line-height:1.5; color:var(--body); margin:0}
+    .section-title{font-size:26px; font-weight:300; letter-spacing:-0.26px; margin:48px 0 20px; color:var(--navy)}
+    .grid{display:grid; gap:20px}
     @media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+    /* Cards */
+    .card{background:#fff; border:1px solid var(--border); border-radius:6px; padding:24px;
+      box-shadow:rgba(23,23,23,0.06) 0 3px 6px; transition:box-shadow .15s ease}
+    .card:hover{box-shadow:var(--shadow-blue) 0 30px 45px -30px, var(--shadow-black) 0 18px 36px -18px}
+    .card h2{font-size:22px; font-weight:300; letter-spacing:-0.22px; margin:0 0 8px; color:var(--navy)}
+    .card h2 a{color:var(--navy)}
+    .card h2 a:hover{color:var(--purple); text-decoration:none}
+    .meta{color:var(--body); font-size:13px; margin-bottom:12px}
+    .badge{display:inline-block; font-size:11px; font-weight:400; padding:2px 8px; border-radius:4px; border:1px solid var(--border); background:#fff; color:var(--label); margin-right:6px}
+    .badge-purple{border-color:var(--border-purple); color:var(--purple)}
+    .badge-green{background:rgba(21,190,83,0.12); color:#108c3d; border-color:rgba(21,190,83,0.4)}
+    /* Article */
+    .article h1{font-size:32px; font-weight:300; letter-spacing:-0.64px; line-height:1.1; margin:0 0 8px; color:var(--navy)}
+    .article h2{font-size:22px; font-weight:400; margin:32px 0 12px; color:var(--navy)}
+    .article p,.article li{font-size:16px; font-weight:300; color:var(--label); line-height:1.7}
+    .article ul{padding-left:22px}
+    .article li{margin-bottom:10px}
+    /* Archive */
+    .month-link{display:inline-flex; padding:6px 12px; border:1px solid var(--border); border-radius:4px; margin:0 8px 8px 0; font-size:14px}
+    /* Footer */
+    footer{background:var(--dark); color:rgba(255,255,255,.75); margin-top:64px}
+    .footer-inner{max-width:1080px; margin:0 auto; padding:40px 24px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px}
+    footer a{color:#fff}
+    footer .small{font-size:13px; color:rgba(255,255,255,.55)}
+    /* Mobile nav */
+    .hamburger{display:none}
+    @media(max-width:760px){
+      .nav-links{display:none}
+      .nav-links.mobile-open{display:flex; position:absolute; top:60px; left:0; right:0; background:#fff; border-bottom:1px solid var(--border); padding:12px 24px; flex-direction:column; align-items:stretch}
+      .hamburger{display:inline-flex}
+      .hero h1{font-size:32px; letter-spacing:-0.64px}
+      .wrap{padding:32px 18px 48px}
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1><a href="/">1ev.fun</a></h1>
-    <nav><a href="/">首页</a><a href="/archive/">归档</a><a href="/rss.xml">RSS</a></nav>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="/">1<em>ev</em>.fun</a>
+      <nav class="nav-links" id="navLinks">
+        <a href="/">首页</a>
+        <a href="/news/">新闻早报</a>
+        <a href="/auto/">出海日报</a>
+        <a href="/archive/">归档</a>
+        <a href="/rss.xml">RSS</a>
+        <a class="btn" href="/archive/">浏览全部</a>
+      </nav>
+      <button class="btn-ghost hamburger" id="menuBtn" type="button" aria-label="菜单">☰</button>
+    </div>
   </header>
-  <slot />
-  <footer>每日 0:00 更新 · 内容由自动化生成 · <a href="/rss.xml">订阅 RSS</a></footer>
+  <main class="wrap"><slot /></main>
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div style="font-size:18px; font-weight:600; color:#fff">1ev.fun</div>
+        <div class="small">每日新闻早报 + 汽车行业出海日报</div>
+      </div>
+      <div class="small">每日 0:00 / 1:00 自动生成 · 2:00 发布<br /><a href="/rss.xml">订阅 RSS</a> · <a href="/archive/">归档</a></div>
+      <div class="small">© <span class="tnum">{year}</span> 1ev.fun</div>
+    </div>
+  </footer>
+  <script>
+    const dd = null;
+    const btn = dd?.querySelector('button');
+    btn?.addEventListener('click', ()=>{ const open = dd.classList.toggle('open'); btn.setAttribute('aria-expanded', open ? 'true' : 'false'); });
+    document.addEventListener('click', (e)=>{ if(!dd?.contains(e.target)) { dd?.classList.remove('open'); btn?.setAttribute('aria-expanded','false'); } });
+    document.getElementById('menuBtn')?.addEventListener('click', ()=> document.getElementById('navLinks')?.classList.toggle('mobile-open'));
+  </script>
 </body>
 </html>

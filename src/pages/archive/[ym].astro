@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { getAllPosts, getMonthIndex } from '../../lib/posts';
+export async function getStaticPaths(){
+  const months = await getMonthIndex();
+  return months.map((m:any)=>({ params:{ ym: m.ym }, props:{ ym: m.ym } }));
+}
+const { ym } = Astro.props;
+const all = await getAllPosts();
+const posts = all.filter(p=> p.date.startsWith(ym)).map(p=>{
+  const lines = (p.body||'').split('\n').filter((l:string)=>l.trim().startsWith('- ')).slice(0,3);
+  return { ...p, bodyHtml: lines.length ? '<ul>'+lines.map((l:string)=>'<li>'+l.replace(/^- /,'')+'</li>').join('')+'</ul>' : '' };
+});
+const months = await getMonthIndex();
+const idx = months.findIndex((m:any)=> m.ym === ym);
+const prev = months[idx+1];
+const next = months[idx-1];
+---
+<Base title={`${ym} 归档 | 1ev`}>
+  <p class="meta"><a href="/archive/">← 归档</a> · <span class="tnum">{ym}</span> · 共 {posts.length} 篇</p>
+  <h1 style="font-size:32px; font-weight:300; letter-spacing:-0.64px; margin:0 0 20px; color:var(--navy)"><span class="tnum">{ym}</span> 简报</h1>
+  <PostList posts={posts} />
+  <div style="margin-top:32px; display:flex; gap:12px; flex-wrap:wrap">
+    {prev && <a class="btn-ghost" href={`/archive/${prev.ym}/`}>← {prev.ym}</a>}
+    {next && <a class="btn-ghost" href={`/archive/${next.ym}/`}>{next.ym} →</a>}
+  </div>
+</Base>

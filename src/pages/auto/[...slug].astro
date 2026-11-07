@@ -2,14 +2,27 @@
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import { marked } from 'marked';
+import { getAllPosts } from '../../lib/posts';
 export async function getStaticPaths(){
   const entries = await getCollection('auto');
   return entries.map((e:any)=>({ params:{ slug:e.id.replace(/\\.md$/,'') }, props:{ entry:e } }));
 }
 const { entry } = Astro.props;
 const html = marked.parse(entry.body || '');
+const all = (await getAllPosts()).filter(p=>p.channel==='auto');
+const idx = all.findIndex(p=> p.date === entry.data.date);
+const prev = all[idx+1];
+const next = all[idx-1];
 ---
 <Base title={entry.data.title} description={entry.data.summary || entry.data.title}>
-  <p class="meta"><a href="/">← 返回首页</a> · {entry.data.date} · 汽车出海日报</p>
-  <article set:html={html} />
+  <p class="meta"><a href="/">← 首页</a> · <a href="/auto/">汽车出海日报</a> · <span class="tnum">{entry.data.date}</span></p>
+  <article class="article">
+    <h1>{entry.data.title}</h1>
+    <div set:html={html} />
+  </article>
+  <hr style="border:0; border-top:1px solid var(--border); margin:40px 0" />
+  <div style="display:flex; gap:12px; justify-content:space-between; flex-wrap:wrap">
+    {prev && <a class="btn-ghost" href={prev.url}>← {prev.date}</a>}
+    {next && <a class="btn-ghost" href={next.url}>{next.date} →</a>}
+  </div>
 </Base>

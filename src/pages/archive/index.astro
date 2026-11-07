@@ -1,12 +1,23 @@
 ---
 import Base from '../../layouts/Base.astro';
-import PostList from '../../components/PostList.astro';
-import { getCollection } from 'astro:content';
-const news = (await getCollection('news')).map((e:any)=>({title:e.data.title,date:e.data.date,channel:'news',url:`/news/${e.id.replace(/\.md$/,'')}/`}));
-const auto = (await getCollection('auto')).map((e:any)=>({title:e.data.title,date:e.data.date,channel:'auto',url:`/auto/${e.id.replace(/\.md$/,'')}/`}));
-const all = [...news,...auto].sort((a:any,b:any)=> b.date.localeCompare(a.date));
+import { getMonthIndex } from '../../lib/posts';
+const months = await getMonthIndex();
+const years = [...new Set(months.map((m:any)=> m.ym.slice(0,4)))];
 ---
 <Base title="归档 | 1ev">
-  <h2>全部归档</h2>
-  <PostList posts={all} />
+  <div class="hero"><h1>全部归档</h1><p>按年月、按栏目都能找到你想要的那一天。</p></div>
+  <h2 class="section-title">按栏目</h2>
+  <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:8px">
+    <a class="btn" href="/news/">📰 新闻早报</a>
+    <a class="btn-ghost" href="/auto/">🚗 出海日报</a>
+  </div>
+  <h2 class="section-title">按年月</h2>
+  {years.map(y=>(
+    <div style="margin-bottom:24px">
+      <h3 style="font-weight:400; font-size:20px; margin:0 0 10px; color:var(--navy)"><span class="tnum">{y}</span> 年</h3>
+      <div>{months.filter((m:any)=>m.ym.startsWith(y)).map((m:any)=>(
+        <a class="month-link" href={`/archive/${m.ym}/`}><span class="tnum">{m.ym}</span>（{m.news.length + m.auto.length} 篇）</a>
+      ))}</div>
+    </div>
+  ))}
 </Base>

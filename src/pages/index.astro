@@ -1,44 +1,53 @@
 ---
 import Base from '../layouts/Base.astro';
 import PostList from '../components/PostList.astro';
-import { getCollection } from 'astro:content';
+import { getAllPosts, getMonthIndex } from '../lib/posts';
 
-const fmtMD = (html:string) => {
-  // keep only first 3 list items or first paragraphs as preview
-  const matches = html.match(/<li>[\s\S]*?<\/li>/g) || [];
-  return matches.length ? '<ul>' + matches.slice(0,3).join('') + '</ul>' : '';
-};
-async function load(coll:string, channel:string){
-  const entries = await getCollection(coll as any);
-  return entries.map((e:any)=>({
-    title: e.data.title, date: e.data.date, channel,
-    url: `/${channel}/${e.slug}/`,
-    summary: e.data.summary || '',
-    bodyHtml: fmtMD(e.body ? '' : '') // preview filled below via render
-  })).sort((a:any,b:any)=> b.date.localeCompare(a.date));
+const all = await getAllPosts();
+const months = await getMonthIndex();
+const news = all.filter(p=>p.channel==='news');
+const auto = all.filter(p=>p.channel==='auto');
+function preview(p:any){
+  const lines = (p.body||'').split('\n').filter((l:string)=>l.trim().startsWith('- ')).slice(0,3);
+  return lines.length ? '<ul>'+lines.map((l:string)=>'<li>'+l.replace(/^- /,'')+'</li>').join('')+'</ul>' : '';
 }
-// Build previews with rendered body
-async function withPreview(coll:string, channel:string){
-  const entries:any[] = await getCollection(coll as any);
-  const out=[];
-  for (const e of entries){
-    const lines = (e.body??'').split('\n').filter((l:string)=>l.trim().startsWith('- ')).slice(0,3);
-    out.push({ title:e.data.title, date:e.data.date, channel, url:`/${channel}/${e.id.replace(/\.md$/,'')}/`, summary:e.data.summary||'', bodyHtml: lines.length ? '<ul>'+lines.map((l:string)=>'<li>'+l.replace(/^- /,'')+'</li>').join('')+'</ul>' : '' });
-  }
-  return out.sort((a:any,b:any)=> b.date.localeCompare(a.date));
-}
-const news = await withPreview('news','news');
-const auto = await withPreview('auto','auto');
-const latestNews = news.slice(0,2);
-const latestAuto = auto.slice(0,2);
-const recent = [...news, ...auto].sort((a:any,b:any)=> b.date.localeCompare(a.date)).slice(0,6);
+const recent = all.slice(0,6).map(p=>({ ...p, bodyHtml: preview(p) }));
+const years = [...new Set(months.map((m:any)=> m.ym.slice(0,4)))];
 ---
 <Base>
-  <p>每天两份简报：中文新闻早报与汽车出海日报。</p>
+  <section class="hero">
+    <h1>每日简报，<br/>一眼看懂世界。</h1>
+    <p>每天 0:00 汇总国内、国际、科技、财经要闻；1:00 更新汽车行业出海动态。由自动化生成，标注消息来源，不编造。</p>
+    <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap">
+      <a class="btn" href="/news/">📰 新闻早报</a>
+      <a class="btn-ghost" href="/auto/">🚗 出海日报</a>
+      <a class="btn-ghost" href="/archive/">归档</a>
+    </div>
+  </section>
+
   <div class="grid">
-    <div class="card"><h2>📰 每日新闻早报</h2>{latestNews[0] ? <p><a href={latestNews[0].url}>{latestNews[0].date} 最新版</a></p> : <p>暂无内容</p>}</div>
-    <div class="card"><h2>🚗 汽车行业出海日报</h2>{latestAuto[0] ? <p><a href={latestAuto[0].url}>{latestAuto[0].date} 最新版</a></p> : <p>暂无内容</p>}</div>
+    <article class="card">
+      <div><span class="badge badge-purple">新闻早报</span><span class="meta tnum">{news[0]?.date || ''}</span></div>
+      <h2>{news[0] ? <a href={news[0].url}>{news[0].title}</a> : '暂无内容'}</h2>
+      {news[0] && <div set:html={preview(news[0])} />}
+    </article>
+    <article class="card">
+      <div><span class="badge badge-green">出海日报</span><span class="meta tnum">{auto[0]?.date || ''}</span></div>
+      <h2>{auto[0] ? <a href={auto[0].url}>{auto[0].title}</a> : '暂无内容'}</h2>
+      {auto[0] && <div set:html={preview(auto[0])} />}
+    </article>
   </div>
-  <h2>最新</h2>
+
+  <h2 class="section-title">按年月浏览</h2>
+  {years.map(y=>(
+    <div style="margin-bottom:16px">
+      <div class="meta tnum" style="font-size:16px; color:var(--navy); margin-bottom:8px">{y} 年</div>
+      <div>{months.filter((m:any)=>m.ym.startsWith(y)).map((m:any)=>(
+        <a class="month-link" href={`/archive/${m.ym}/`}>{m.ym}（{m.news.length + m.auto.length}）</a>
+      ))}</div>
+    </div>
+  ))}
+
+  <h2 class="section-title">最新发布</h2>
   <PostList posts={recent} />
 </Base>
