@@ -29,7 +29,7 @@ const index = all.map(p=>({
       const hits = index.filter(p => p.title.toLowerCase().includes(q) || p.body.toLowerCase().includes(q));
       if(!hits.length){ resultsEl.innerHTML = '<p class="meta">没有找到 “'+escapeHtml(q)+'” 相关的简报。</p>'; return; }
       resultsEl.innerHTML = hits.map(p=>{
-        const badge = p.channel === 'news' ? '<span class="badge badge-purple">新闻</span>' : '<span class="badge badge-green">出海</span>';
+        const badge = p.channel === 'news' ? '<span class="badge badge-purple">新闻</span>' : '<span class="badge badge-green">汽车</span>';
         return '<div class="row"><span class="date tnum">'+p.date+'</span><span>'+badge+'</span><a href="'+p.url+'">'+escapeHtml(p.title)+'</a></div>';
       }).join('');
     }

@@ -2,7 +2,7 @@
 const { posts = [] } = Astro.props;
 const badge = (p:any) => p.channel === 'news'
   ? '<span class="badge badge-purple">新闻早报</span>'
-  : '<span class="badge badge-green">出海日报</span>';
+  : '<span class="badge badge-green">汽车日报</span>';
 ---
 <div class="grid">{posts.map((p:any)=>(
   <article class="card">

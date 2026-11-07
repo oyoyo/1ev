@@ -40,7 +40,7 @@ const hot = all.slice(0,5); // sidebar "最近"
           {latestNews[0] && <div set:html={preview(latestNews[0])} />}
         </article>
         <article class="card">
-          <div><span class="badge badge-green">出海日报</span><span class="meta tnum">{latestAuto[0]?.date || ''}</span></div>
+          <div><span class="badge badge-green">汽车日报</span><span class="meta tnum">{latestAuto[0]?.date || ''}</span></div>
           <h2>{latestAuto[0] ? <a href={latestAuto[0].url}>{latestAuto[0].title}</a> : '暂无内容'}</h2>
           {latestAuto[0] && <div set:html={preview(latestAuto[0])} />}
         </article>
@@ -50,7 +50,7 @@ const hot = all.slice(0,5); // sidebar "最近"
         {recent.map(p=>(
           <div class="row">
             <span class="date tnum">{p.date}</span>
-            <span>{p.channel==='news' ? <span class="badge badge-purple">新闻</span> : <span class="badge badge-green">出海</span>}</span>
+            <span>{p.channel==='news' ? <span class="badge badge-purple">新闻</span> : <span class="badge badge-green">汽车</span>}</span>
             <a href={p.url}>{p.title}</a>
           </div>
         ))}
