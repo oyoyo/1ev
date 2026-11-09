@@ -22,6 +22,7 @@ const year = new Date().getFullYear();
       --border:#e5edf5; --border-purple:#b9b9f9;
       --shadow-blue:rgba(50,50,93,0.25); --shadow-black:rgba(0,0,0,0.1);
       --dark:#1c1e54;
+	  --menuBg:rgba(238, 245, 250, 0.9);
     }
     *{box-sizing:border-box}
     html{-webkit-text-size-adjust:100%}
@@ -36,11 +37,11 @@ const year = new Date().getFullYear();
     a:hover{color:var(--purple-hover); text-decoration:underline}
     .tnum{font-feature-settings:"tnum"}
     /* Nav */
-    .site-header{position:fixed; top:0; left:0; right:0; z-index:50; background:rgba(255,255,255,.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border)}
+    .site-header{position:sticky; top:0; z-index:50; background:var(--menuBg); backdrop-filter:blur(12px); border-bottom:1px solid var(--border)}
     .nav-inner{max-width:1080px; margin:0 auto; padding:0 24px; height:60px; display:flex; align-items:center; justify-content:space-between; gap:16px}
     .brand{font-size:20px; font-weight:600; letter-spacing:-0.5px; color:var(--navy); text-decoration:none}
     .brand em{font-style:normal; color:var(--purple)}
-    .nav-links{display:flex; align-items:center; gap:4px; flex-wrap:wrap}
+    .nav-links{display:flex; align-items:center; gap:4px; flex-wrap:wrap; background:var(--menuBg);}
     .nav-links a, .dropdown>button{font-size:14px; font-weight:400; color:var(--label); padding:8px 12px; border-radius:6px; background:none; border:0; cursor:pointer; font-family:inherit}
     .nav-links a:hover, .dropdown>button:hover{background:rgba(83,58,253,.06); text-decoration:none; color:var(--navy)}
     .dropdown{position:relative}
@@ -55,7 +56,6 @@ const year = new Date().getFullYear();
     .btn-ghost{background:transparent; color:var(--purple); border:1px solid var(--border-purple); padding:8px 16px; border-radius:4px; font-size:14px}
     .btn-ghost:hover{background:rgba(83,58,253,.05); text-decoration:none}
     /* Layout */
-    body{padding-top:60px}
     .wrap{width:min(100%,1080px); max-width:100%; margin:0 auto; padding:48px 24px 64px; box-sizing:border-box}
     .hero{max-width:720px; margin-bottom:40px}
     .hero h1{font-size:38px; font-weight:300; line-height:1.15; letter-spacing:-0.96px; margin:0 0 16px; color:var(--navy)}

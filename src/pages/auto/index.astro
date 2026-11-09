@@ -8,7 +8,7 @@ const posts = all.map(p=>{
   return { ...p, bodyHtml: lines.length ? '<ul>'+lines.map((l:string)=>'<li>'+l.replace(/^- /,'')+'</li>').join('')+'</ul>' : '' };
 });
 ---
-<Base title="出海日报 | 1ev">
-  <div class="hero"><h1>🚗 出海日报</h1><p>共 <span class="tnum">{all.length}</span> 篇，每日更新。</p></div>
+<Base title="汽车出海日报 | 1ev">
+  <div class="hero"><h1>🚗 汽车出海日报</h1><p>共 <span class="tnum">{all.length}</span> 篇，每日更新。</p></div>
   <PostList posts={posts} />
 </Base>

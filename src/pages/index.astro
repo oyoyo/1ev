@@ -12,9 +12,17 @@ const years = [...new Set(months.map((m:any)=> m.ym.slice(0,4)))];
 function stripMd(s:string){
   return (s||'').replace(/^#{1,6}\s+/gm,'').replace(/\*\*/g,'').replace(/^- /gm,'').replace(/\[([^\]]+)\]\(([^)]+)\)/g,'$1').trim();
 }
+function toTitleLinks(line:string, url:string){
+  // [来源名](https://...) -> <a href={url}>来源名</a>, and strip raw URL duplication
+  // Also **粗体** -> <strong>粗体</strong>; plain links [text](url) -> <a href={url}>text</a>
+  let s = line.replace(/^- /,'');
+  s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2">$1</a>');
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  return s;
+}
 function preview(p:any){
   const lines = (p.body||'').split('\n').filter((l:string)=>l.trim().startsWith('- ')).slice(0,3);
-  return lines.length ? '<ul>'+lines.map((l:string)=>'<li>'+l.replace(/^- /,'')+'</li>').join('')+'</ul>' : '';
+  return lines.length ? '<ul>'+lines.map((l:string)=>'<li>'+toTitleLinks(l, p.url)+'</li>').join('')+'</ul>' : '';
 }
 function excerpt(p:any){
   const txt = stripMd((p.body||'').split('\n').filter((l:string)=>l.trim() && !l.startsWith('#')).join(' '));
