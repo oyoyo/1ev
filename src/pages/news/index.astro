@@ -3,9 +3,15 @@ import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
 import { getAllPosts } from '../../lib/posts';
 const all = (await getAllPosts()).filter(p=>p.channel==='news');
+function toTitleLinks(line:string){
+  let s = line.replace(/^- /,'');
+  s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2">$1</a>');
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  return s;
+}
 const posts = all.map(p=>{
   const lines = (p.body||'').split('\n').filter((l:string)=>l.trim().startsWith('- ')).slice(0,3);
-  return { ...p, bodyHtml: lines.length ? '<ul>'+lines.map((l:string)=>'<li>'+l.replace(/^- /,'')+'</li>').join('')+'</ul>' : '' };
+  return { ...p, bodyHtml: lines.length ? '<ul>'+lines.map((l:string)=>'<li>'+toTitleLinks(l)+'</li>').join('')+'</ul>' : '' };
 });
 ---
 <Base title="新闻早报 | 1ev">
