@@ -55,13 +55,17 @@ const year = new Date().getFullYear();
     .btn-ghost{background:transparent; color:var(--purple); border:1px solid var(--border-purple); padding:8px 16px; border-radius:4px; font-size:14px}
     .btn-ghost:hover{background:rgba(83,58,253,.05); text-decoration:none}
     /* Layout */
-    .wrap{max-width:1080px; margin:0 auto; padding:48px 24px 64px}
+    .wrap{width:min(100%,1080px); max-width:100%; margin:0 auto; padding:48px 24px 64px; box-sizing:border-box}
     .hero{max-width:720px; margin-bottom:40px}
     .hero h1{font-size:38px; font-weight:300; line-height:1.15; letter-spacing:-0.96px; margin:0 0 16px; color:var(--navy)}
     .hero p{font-size:18px; font-weight:300; line-height:1.5; color:var(--body); margin:0}
     .section-title{font-size:24px; font-weight:300; letter-spacing:-0.26px; margin:48px 0 20px; color:var(--navy)}
-    .grid{display:grid; gap:20px}
-    @media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+    .grid{display:grid; gap:20px; grid-template-columns:minmax(0,1fr)}
+    .card{min-width:0; max-width:100%; overflow-wrap:anywhere}
+    .card h2{overflow-wrap:anywhere; word-break:break-word}
+    .card a{overflow-wrap:anywhere; word-break:break-word}
+    .card ul{overflow-wrap:anywhere; word-break:break-word; max-width:100%}
+    @media(min-width:640px){.grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
     /* Cards */
     .card{background:#fff; border:1px solid var(--border); border-radius:6px; padding:24px;
       box-shadow:rgba(23,23,23,0.06) 0 3px 6px; transition:box-shadow .15s ease}
@@ -76,7 +80,8 @@ const year = new Date().getFullYear();
     /* Article */
     .article h1{font-size:28px; font-weight:300; letter-spacing:-0.64px; line-height:1.1; margin:0 0 8px; color:var(--navy)}
     .article h2{font-size:20px; font-weight:400; margin:32px 0 12px; color:var(--navy)}
-    .article p,.article li{font-size:16px; font-weight:300; color:var(--label); line-height:1.7}
+    .article p,.article li{font-size:16px; font-weight:300; color:var(--label); line-height:1.7; overflow-wrap:anywhere; word-break:break-word}
+    .article a{overflow-wrap:anywhere; word-break:break-word}
     .article ul{padding-left:22px}
     .article li{margin-bottom:10px}
     /* Archive */
