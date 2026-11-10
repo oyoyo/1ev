@@ -8,7 +8,8 @@ export async function getStaticPaths(){
   return entries.map((e:any)=>({ params:{ slug:e.id.replace(/\\.md$/,'') }, props:{ entry:e } }));
 }
 const { entry } = Astro.props;
-const html = marked.parse(entry.body || '');
+const raw = (entry.body || '').replace(/【([^】]+)】\((https?:\/\/[^)\s]+)\)/g, '[$1]($2)');
+const html = marked.parse(raw);
 const all = (await getAllPosts()).filter(p=>p.channel==='auto');
 const idx = all.findIndex(p=> p.date === entry.data.date);
 const prev = all[idx+1];
