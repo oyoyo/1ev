@@ -2,21 +2,16 @@
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
 import { getAllPosts, getMonthIndex } from '../../lib/posts';
+import { renderBullet } from '../../lib/links';
 export async function getStaticPaths(){
   const months = await getMonthIndex();
   return months.map((m:any)=>({ params:{ ym: m.ym }, props:{ ym: m.ym } }));
 }
 const { ym } = Astro.props;
 const all = await getAllPosts();
-function toTitleLinks(line:string){
-  let s = line.replace(/^- /,'');
-  s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2">$1</a>');
-  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  return s;
-}
 const posts = all.filter(p=> p.date.startsWith(ym)).map(p=>{
   const lines = (p.body||'').split('\n').filter((l:string)=>l.trim().startsWith('- ')).slice(0,3);
-  return { ...p, bodyHtml: lines.length ? '<ul>'+lines.map((l:string)=>'<li>'+toTitleLinks(l)+'</li>').join('')+'</ul>' : '' };
+  return { ...p, bodyHtml: lines.length ? '<ul>'+lines.map((l:string)=>'<li>'+renderBullet(l)+'</li>').join('')+'</ul>' : '' };
 });
 const months = await getMonthIndex();
 const idx = months.findIndex((m:any)=> m.ym === ym);
